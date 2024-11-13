@@ -5,15 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparador de Precios</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&callback=initMap" async defer></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
 </head>
 <body>
     <header>
         <h1>Comparador de Precios</h1>
     </header>
 
-    <div id="appContainer">
-        <!-- Formulario de productos -->
+    <!-- Mapa de Google -->
+    <div id="map"></div>
+
+    <!-- Formulario de Productos -->
+    <div id="formContainer">
         <section id="formSection">
             <h2>Ingresar Producto</h2>
             <form id="productForm">
@@ -23,18 +30,13 @@
                 <input type="file" id="productImage" accept="image/*" required>
                 <button type="submit">Agregar Producto</button>
             </form>
-            <div id="bestPriceBox"></div>
-        </section>
-
-        <!-- Sección de mapa -->
-        <section id="mapSection">
-            <h2>Mapa de Tiendas</h2>
-            <div id="map"></div>
-            <ul id="productList"></ul>
         </section>
     </div>
 
-    <!-- Pequeño banner de publicidad en la parte inferior -->
+    <!-- Mejor precio encontrado -->
+    <div id="bestPriceBox"></div>
+
+    <!-- Banner de Publicidad -->
     <footer id="adBanner">
         <p>Anuncio</p>
     </footer>
