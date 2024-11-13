@@ -1,3 +1,4 @@
+/* Estilo General */
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f8ff; /* Azul claro */
@@ -8,11 +9,13 @@ body {
     align-items: center;
 }
 
+/* Título */
 header h1 {
     color: #00bcd4; /* Aqua */
     margin-top: 20px;
 }
 
+/* Banner de Publicidad */
 #adBanner {
     width: 100%;
     background-color: #ff9800; /* Naranja */
@@ -26,6 +29,7 @@ header h1 {
     font-size: 14px;
 }
 
+/* Mapa */
 #map {
     width: 100%;
     height: 500px;
@@ -33,6 +37,7 @@ header h1 {
     margin-top: 20px;
 }
 
+/* Contenedor del Formulario */
 #formContainer {
     width: 100%;
     max-width: 900px;
@@ -42,6 +47,7 @@ header h1 {
     margin-top: 20px;
 }
 
+/* Estilos del Formulario */
 #formSection {
     background: #ffffff;
     padding: 20px;
@@ -70,6 +76,7 @@ button:hover {
     background-color: #0097a7; /* Aqua oscuro */
 }
 
+/* Cuadro de Mejor Precio */
 #bestPriceBox {
     background-color: #e0ffe0;
     padding: 10px;
@@ -79,8 +86,4 @@ button:hover {
     width: 100%;
     max-width: 400px;
     text-align: center;
-}
-
-footer {
-    margin-top: 20px;
 }
