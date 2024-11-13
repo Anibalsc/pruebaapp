@@ -1,46 +1,83 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparador de Precios</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&callback=initMap" async defer></script>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparador de Precios</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss&callback=initMap&v=weekly" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      padding: 20px;
+    }
+    #map {
+      height: 400px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .form-container {
+      margin-top: 20px;
+      background-color: #e6f7ff;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    #best-price-box {
+      margin-top: 20px;
+      background-color: #ffcccb;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .advertisement {
+      background-color: #f4a261;
+      padding: 10px;
+      color: white;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Comparador de Precios</h1>
-    </header>
 
-    <!-- Mapa de Google -->
-    <div id="map"></div>
+  <h1>Comparador de Precios</h1>
 
-    <!-- Formulario de Ingreso de Producto -->
-    <div id="formContainer">
-        <section id="formSection">
-            <h2>Ingresar Producto</h2>
-            <form id="productForm">
-                <input type="text" id="productName" placeholder="Nombre del producto" required>
-                <input type="number" id="productPrice" placeholder="Precio" required>
-                <input type="text" id="storeName" placeholder="Nombre de la tienda" required>
-                <input type="file" id="productImage" accept="image/*" required>
-                <button type="submit">Agregar Producto</button>
-            </form>
-        </section>
-    </div>
+  <!-- Mapa de Google -->
+  <div id="map"></div>
 
-    <!-- Mejor precio encontrado -->
-    <div id="bestPriceBox"></div>
+  <!-- Formulario para agregar productos -->
+  <div class="form-container">
+    <form id="product-form">
+      <input type="text" id="product-name" placeholder="Nombre del producto" required><br>
+      <input type="number" id="product-price" placeholder="Precio" required><br>
+      <input type="text" id="store-name" placeholder="Nombre de la tienda" required><br>
+      <input type="file" id="product-image" required><br>
+      <button type="submit">Agregar Producto</button>
+    </form>
+  </div>
 
-    <!-- Banner de Publicidad -->
-    <footer id="adBanner">
-        <p>¡Mira nuestras ofertas exclusivas!</p>
-    </footer>
+  <!-- Recuadro para mostrar el mejor precio -->
+  <div id="best-price-box"></div>
 
-    <script src="script.js"></script>
+  <!-- Banner de publicidad -->
+  <div class="advertisement">
+    ¡Compra inteligente! Descubre los mejores precios en tu zona.
+  </div>
+
+  <!-- Cargar script de Firebase y la funcionalidad de la aplicación -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
