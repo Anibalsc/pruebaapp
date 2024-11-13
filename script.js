@@ -1,4 +1,4 @@
-// Configuración de Firebase
+// Configuración de Firebase (aplica si usas Firebase)
 const firebaseConfig = {
     apiKey: "AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8",
     authDomain: "your-firebase-auth-domain",
@@ -122,22 +122,3 @@ function displayBestPrice() {
 
         if (bestPrice) {
             bestPriceBox.innerHTML = `Mejor precio: <strong>${bestPrice.name}</strong> en <strong>${bestPrice.store}</strong> por $${bestPrice.price}`;
-        } else {
-            bestPriceBox.innerHTML = "No hay productos en el rango de 20 km.";
-        }
-    });
-}
-
-// Calcular distancia entre dos ubicaciones
-function calculateDistance(loc1, loc2) {
-    const R = 6371; // Radio de la Tierra en km
-    const dLat = (loc2.lat - loc1.lat) * Math.PI / 180;
-    const dLng = (loc2.lng - loc1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(loc1.lat * Math.PI / 180) * Math.cos(loc2.lat * Math.PI / 180) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
-}
-
-// Inicializar el mapa al cargar la página
-window.onload = initMap;
