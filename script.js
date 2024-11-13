@@ -1,4 +1,4 @@
-// Configuración de Firebase (aplica si usas Firebase)
+// Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8",
     authDomain: "your-firebase-auth-domain",
@@ -122,3 +122,22 @@ function displayBestPrice() {
 
         if (bestPrice) {
             bestPriceBox.innerHTML = `Mejor precio: <strong>${bestPrice.name}</strong> en <strong>${bestPrice.store}</strong> por $${bestPrice.price}`;
+        } else {
+            bestPriceBox.innerHTML = "No hay productos disponibles en tu área.";
+        }
+    });
+}
+
+// Función para calcular la distancia entre dos ubicaciones (en km)
+function calculateDistance(loc1, loc2) {
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = (loc2.lat - loc1.lat) * Math.PI / 180;
+    const dLon = (loc2.lng - loc1.lng) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(loc1.lat * Math.PI / 180) * Math.cos(loc2.lat * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distancia en km
+}
