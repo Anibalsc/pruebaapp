@@ -1,17 +1,15 @@
-// Array para almacenar los productos
 const products = [];
 let map;
 let userMarker;
 
-// Función para inicializar el mapa de Google Maps
+// Inicializar el mapa y centrarse en la ubicación del usuario
 function initMap() {
-    // Centrar el mapa en una ubicación predeterminada (o en la ubicación del usuario)
     map = new google.maps.Map(document.getElementById("map"), {
         zoom: 12,
         center: { lat: -34.397, lng: 150.644 },
     });
 
-    // Intentar obtener la ubicación actual del usuario
+    // Obtener la ubicación del usuario
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             position => {
@@ -20,7 +18,6 @@ function initMap() {
                     lng: position.coords.longitude,
                 };
 
-                // Colocar el marcador en la ubicación del usuario
                 userMarker = new google.maps.Marker({
                     position: pos,
                     map: map,
@@ -34,15 +31,14 @@ function initMap() {
             }
         );
     } else {
-        alert("La geolocalización no está soportada en este navegador.");
+        alert("La geolocalización no está soportada.");
     }
 }
 
-// Función para manejar el formulario y agregar productos
+// Manejo del formulario para agregar productos
 document.getElementById('productForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Obtener datos del formulario
     const productName = document.getElementById('productName').value;
     const productPrice = parseFloat(document.getElementById('productPrice').value);
     const storeName = document.getElementById('storeName').value;
@@ -53,14 +49,12 @@ document.getElementById('productForm').addEventListener('submit', function(event
         return;
     }
 
-    // Obtener la ubicación actual del usuario
     if (userMarker && userMarker.getPosition()) {
         const productLocation = {
             lat: userMarker.getPosition().lat(),
             lng: userMarker.getPosition().lng()
         };
 
-        // Crear un objeto de producto
         const product = {
             name: productName,
             price: productPrice,
@@ -71,13 +65,13 @@ document.getElementById('productForm').addEventListener('submit', function(event
 
         products.push(product);
         displayProducts();
-        addProductMarker(product); // Agregar marcador en el mapa
+        addProductMarker(product);
     } else {
         alert("Ubicación no disponible.");
     }
 });
 
-// Función para agregar un marcador de producto en el mapa
+// Agregar marcador en el mapa
 function addProductMarker(product) {
     const marker = new google.maps.Marker({
         position: product.location,
@@ -94,7 +88,7 @@ function addProductMarker(product) {
     });
 }
 
-// Función para calcular la distancia entre dos ubicaciones
+// Calcular distancia entre dos ubicaciones
 function calculateDistance(loc1, loc2) {
     const R = 6371;
     const dLat = (loc2.lat - loc1.lat) * (Math.PI / 180);
@@ -102,11 +96,10 @@ function calculateDistance(loc1, loc2) {
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
               Math.cos(loc1.lat * (Math.PI / 180)) * Math.cos(loc2.lat * (Math.PI / 180)) *
               Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 }
 
-// Función para mostrar productos y encontrar el precio más bajo en 20 km
+// Mostrar productos y calcular el precio más bajo
 function displayProducts() {
     const productList = document.getElementById('productList');
     productList.innerHTML = '';
@@ -134,3 +127,4 @@ function displayProducts() {
         bestPriceBox.innerHTML = "No hay productos en el rango de 20 km.";
     }
 }
+
