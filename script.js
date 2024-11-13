@@ -34,7 +34,7 @@ function getUserLocation() {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        initMap();
+        initMap(); // Inicializamos el mapa después de obtener la ubicación
       },
       () => {
         alert("No se pudo obtener la ubicación del usuario.");
