@@ -127,4 +127,3 @@ function displayProducts() {
         bestPriceBox.innerHTML = "No hay productos en el rango de 20 km.";
     }
 }
-
