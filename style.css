@@ -1,86 +1,99 @@
+/* General */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f8ff; /* Azul claro */
+    background-color: #f0f8ff; /* Fondo azul claro */
+    color: #333;
     margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding: 20px;
 }
 
-header h1 {
-    color: #00bcd4; /* Aqua */
-    margin-top: 20px;
-}
-
-#adBanner {
-    width: 100%;
-    background-color: #ff9800; /* Naranja */
-    color: white;
+/* Encabezado */
+h1 {
+    font-size: 2.5em;
+    color: #333;
     text-align: center;
-    font-weight: bold;
-    padding: 8px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    font-size: 14px;
 }
 
+/* Mapa */
 #map {
+    height: 400px;
     width: 100%;
-    height: 500px;
-    border-radius: 8px;
-    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
 }
 
-#formContainer {
-    width: 100%;
-    max-width: 900px;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
+/* Contenedor del formulario */
+.form-container {
     margin-top: 20px;
-}
-
-#formSection {
-    background: #ffffff;
+    background-color: #e6f7ff;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
 }
 
-input, button {
-    margin-bottom: 10px;
+/* Estilo del formulario */
+input[type="text"],
+input[type="number"],
+input[type="file"] {
     padding: 10px;
-    font-size: 16px;
+    margin: 10px;
     border-radius: 5px;
+    border: 1px solid #ddd;
     width: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
 }
 
 button {
-    background-color: #00bcd4; /* Aqua */
+    padding: 12px 20px;
+    background-color: #4CAF50; /* Verde */
     color: white;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 1.1rem;
+    width: 100%;
 }
 
 button:hover {
-    background-color: #0097a7; /* Aqua oscuro */
+    background-color: #45a049; /* Verde oscuro */
 }
 
-#bestPriceBox {
-    background-color: #e0ffe0;
-    padding: 10px;
-    font-size: 18px;
+/* Recuadro del mejor precio */
+#best-price-box {
     margin-top: 20px;
+    background-color: #ffcccb; /* Rojo suave */
+    padding: 15px;
     border-radius: 5px;
-    width: 100%;
-    max-width: 400px;
+    font-size: 1.2rem;
+    font-weight: bold;
     text-align: center;
 }
 
-footer {
+/* Banner de publicidad */
+.advertisement {
+    background-color: #f4a261; /* Naranja */
+    padding: 10px;
+    color: white;
+    text-align: center;
     margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.advertisement a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Estilo de los elementos de texto */
+strong {
+    color: #2f4f4f;
+}
+
+input[type="file"] {
+    font-size: 1rem;
 }
