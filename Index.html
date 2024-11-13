@@ -1,84 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comparador de Precios</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-  <!-- Script de Google Maps API con tu clave -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss&callback=initMap&v=weekly" defer></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f8ff;
-      padding: 20px;
-    }
-    #map {
-      height: 400px;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-    .form-container {
-      margin-top: 20px;
-      background-color: #e6f7ff;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-    }
-    #best-price-box {
-      margin-top: 20px;
-      background-color: #ffcccb;
-      padding: 15px;
-      border-radius: 5px;
-    }
-    .advertisement {
-      background-color: #f4a261;
-      padding: 10px;
-      color: white;
-      text-align: center;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Precios</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss&callback=initMap&v=weekly" defer></script>
 </head>
 <body>
 
-  <h1>Comparador de Precios</h1>
+    <h1>Comparador de Precios</h1>
 
-  <!-- Mapa de Google -->
-  <div id="map"></div>
+    <!-- Mapa -->
+    <div id="map"></div>
 
-  <!-- Formulario para agregar productos -->
-  <div class="form-container">
-    <form id="product-form">
-      <input type="text" id="product-name" placeholder="Nombre del producto" required><br>
-      <input type="number" id="product-price" placeholder="Precio" required><br>
-      <input type="text" id="store-name" placeholder="Nombre de la tienda" required><br>
-      <input type="file" id="product-image" required><br>
-      <button type="submit">Agregar Producto</button>
-    </form>
-  </div>
+    <!-- Formulario para Ingresar Producto -->
+    <div class="form-container">
+        <h2>Ingresa los datos del producto</h2>
+        <form id="product-form">
+            <input type="text" id="product-name" placeholder="Nombre del producto" required>
+            <input type="number" id="product-price" placeholder="Precio del producto" required>
+            <input type="text" id="store-name" placeholder="Nombre de la tienda" required>
+            <input type="file" id="product-photo" accept="image/*" required>
+            <button type="submit">Guardar Producto</button>
+        </form>
+    </div>
 
-  <!-- Recuadro para mostrar el mejor precio -->
-  <div id="best-price-box"></div>
+    <!-- Recuadro del mejor precio -->
+    <div id="best-price-box" style="display:none;">
+        <p>El mejor precio encontrado está en <strong id="best-store"></strong> por <strong id="best-price"></strong>.</p>
+    </div>
 
-  <!-- Banner de publicidad -->
-  <div class="advertisement">
-    ¡Compra inteligente! Descubre los mejores precios en tu zona.
-  </div>
+    <!-- Banner de publicidad -->
+    <div class="advertisement">
+        ¡Visita nuestra tienda online para más ofertas!
+    </div>
 
-  <!-- Cargar script de Firebase y la funcionalidad de la aplicación -->
-  <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
