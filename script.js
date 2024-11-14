@@ -1,102 +1,97 @@
-// Firebase Initialization (Consider using environment variables for security)
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, get, child } from "firebase/database";
-
+// Configuración de Firebase
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY, // Replace with your Firebase API key
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN, // Replace with your Firebase auth domain
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL, // Replace with your Firebase database URL
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID, // Replace with your Firebase project ID
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET, // Replace with your Firebase storage bucket
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID, // Replace with your Firebase messaging sender ID
-  appId: process.env.REACT_APP_FIREBASE_APP_ID, // Replace with your Firebase app ID
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID // Replace with your Firebase measurement ID (optional)
+    apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
+    authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
+    databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com",
+    projectId: "comparador-de-precios-ae4b4",
+    storageBucket: "comparador-de-precios-ae4b4.firebasestorage.app",
+    messagingSenderId: "764983752712",
+    appId: "1:764983752712:web:9ceed2bc4cf7f76adaf9bd",
+    measurementId: "G-WC3YSRPJ3P"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-// Google Maps and Geolocation
+// Variables globales
 let map;
-let userLocation = { lat: 0, lng: 0 };
+let userLocation;
 
+// Inicializar y mostrar el mapa
 function initMap() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      userLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: userLocation,
-        zoom: 12
-      });
-      const marker = new google.maps.Marker({
-        position: userLocation,
-        map: map,
-        title: "Your Location"
-      });
-    });
-  } else {
-    alert("Geolocation is not supported by your browser.");
-  }
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: userLocation,
+                zoom: 13,
+            });
+            new google.maps.Marker({
+                position: userLocation,
+                map,
+                title: "Tu ubicación",
+            });
+        },
+        () => {
+            alert("No se pudo obtener la ubicación");
+        }
+    );
 }
 
-// Function to Store Products in Firebase
-document.getElementById("product-form").addEventListener("submit", function(e) {
-  e.preventDefault();
+// Guardar producto en Firebase
+document.getElementById("addProductForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const productName = document.getElementById("productName").value;
+    const productPrice = parseFloat(document.getElementById("productPrice").value);
+    const storeName = document.getElementById("storeName").value;
 
-  const productName = document.getElementById("product-name").value;
-  const productPrice = document.getElementById("product-price").value;
-  const storeName = document.getElementById("store-name").value;
-  const productPhoto = document.getElementById("product-photo").files[0];
-
-  // Validation (Consider adding input validation for data quality)
-  if (!productName || !productPrice || !storeName) {
-    alert("Please fill in all required fields.");
-    return;
-  }
-
-  // Create a new product reference with a unique timestamp
-  const newProductRef = ref(db, `productos/${Date.now()}`);
-
-  set(newProductRef, {
-    name: productName,
-    price: productPrice,
-    store: storeName,
-    location: userLocation,
-    photo: productPhoto ? productPhoto.name : "" // Handle potential absence of photo
-  })
-    .then(() => {
-      alert("Product saved successfully.");
-      comparePrices(); // Call comparePrices after successful save
-    })
-    .catch((error) => {
-      console.error("Error saving product:", error);
-      alert("An error occurred while saving the product.");
+    const newProductRef = database.ref("products").push();
+    newProductRef.set({
+        productName,
+        productPrice,
+        storeName,
+        latitude: userLocation.lat,
+        longitude: userLocation.lng,
+        timestamp: Date.now()
     });
+
+    document.getElementById("addProductForm").reset();
+    displayBestPrice(productName);
 });
 
-// Function to Compare Prices
-function comparePrices() {
-  const productosRef = ref(db, 'productos/');
+// Mostrar el mejor precio para el producto
+function displayBestPrice(productName) {
+    database.ref("products").orderByChild("productName").equalTo(productName).once("value", (snapshot) => {
+        let bestProduct = null;
 
-  get(productosRef)
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        let bestPrice = Infinity;
-        let bestStore = "";
         snapshot.forEach((childSnapshot) => {
-          const product = childSnapshot.val();
-          const price = parseFloat(product.price);
-          if (price < bestPrice) {
-            bestPrice = price;
-            bestStore = product.store;
-          }
+            const product = childSnapshot.val();
+            if (!bestProduct || product.productPrice < bestProduct.productPrice) {
+                bestProduct = product;
+            }
         });
 
-        document.getElementById("best-price-box").style.display = "block";
-        document.getElementById("best-store").textContent = bestStore;
-        document.getElementById("best-price").textContent = `$${bestPrice.toFixed(2)}`; // Format price with two decimal places
-      } else {
-        console
+        if (bestProduct) {
+            const bestPriceDetails = `
+                <p><strong>Producto:</strong> ${bestProduct.productName}</p>
+                <p><strong>Mejor precio:</strong> $${bestProduct.productPrice.toFixed(2)}</p>
+                <p><strong>Tienda:</strong> ${bestProduct.storeName}</p>
+            `;
+            document.getElementById("bestPriceDetails").innerHTML = bestPriceDetails;
+
+            const bestLocation = { lat: bestProduct.latitude, lng: bestProduct.longitude };
+            new google.maps.Marker({
+                position: bestLocation,
+                map,
+                title: `${bestProduct.productName} - ${bestProduct.storeName}`,
+            });
+            map.setCenter(bestLocation);
+        } else {
+            document.getElementById("bestPriceDetails").innerHTML = "<p>No se encontraron precios para este producto.</p>";
+        }
+    });
+}
+
+// Ejecutar la función initMap al cargar la página
+window.onload = initMap;
