@@ -60,62 +60,40 @@ function addProduct() {
             price: productPrice,
             store: storeLocation,
             image: URL.createObjectURL(productImage),
-            location: map.getCenter() // Usa la ubicación del mapa
+            location: map.getCenter() 
         };
 
         // Guardar en Firebase
         const productRef = db.ref('products/' + Date.now());
         productRef.set(productData);
 
-        // Agregar producto a la lista
         products.push(productData);
-        displayProducts();
-        comparePrices();
+        alert("Producto agregado exitosamente.");
     } else {
         alert("Por favor, completa todos los campos.");
     }
 }
 
-// Mostrar productos en la lista
-function displayProducts() {
-    const productsContainer = document.getElementById("productsContainer");
-    productsContainer.innerHTML = ""; // Limpiar la lista antes de agregar los nuevos productos
+// Función para buscar el mejor precio
+function searchBestPrice() {
+    const searchProductName = document.getElementById("searchProductName").value.toLowerCase();
 
-    products.forEach((product) => {
-        const productItem = document.createElement("div");
-        productItem.classList.add("product-item");
-        productItem.innerHTML = `
-            <div class="product-info">
-                <img src="${product.image}" alt="Imagen del producto" width="50" height="50">
-                <h4>${product.name}</h4>
-                <p>Precio: $${product.price}</p>
-                <p>Tienda: ${product.store}</p>
-            </div>
-        `;
-        productsContainer.appendChild(productItem);
-    });
-}
-
-// Comparar precios y mostrar la mejor oferta
-function comparePrices() {
     let bestPrice = Infinity;
-    let bestStore = "";
+    let bestProduct = null;
 
-    products.forEach((product) => {
-        if (product.price < bestPrice) {
+    products.forEach(product => {
+        if (product.name.toLowerCase() === searchProductName && product.price < bestPrice) {
             bestPrice = product.price;
-            bestStore = product.store;
+            bestProduct = product;
         }
     });
 
-    // Mostrar la mejor oferta
-    const recommendationBox = document.getElementById("recommendationBox");
-    document.getElementById("bestStore").textContent = bestStore;
-    document.getElementById("bestPrice").textContent = bestPrice.toFixed(2);
-    recommendationBox.style.display = "block";
-}
-
-// Función de compra (por ahora solo un mensaje de confirmación)
-function buyProduct() {
-    alert("Producto comprado exitosamente.");
+    if (bestProduct) {
+        document.getElementById("bestStore").textContent = bestProduct.store;
+        document.getElementById("bestPrice").textContent = bestPrice.toFixed(2);
+        document.getElementById("bestLocation").textContent = `${bestProduct.location.lat}, ${bestProduct.location.lng}`;
+        document.getElementById("recommendationBox").style.display = "block";
+    } else {
+        alert("Producto no encontrado.");
+    }
 }
