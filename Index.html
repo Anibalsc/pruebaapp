@@ -4,35 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparador de Precios</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap&v=weekly" defer></script>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Cargar la API de Google Maps -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&libraries=places"></script>
 </head>
 <body>
-
-    <h1>Comparador de Precios Local</h1>
-
+    <h1>Comparador de Precios</h1>
     <div id="map"></div>
 
-    <form id="product-form">
-        <label for="product-name">Nombre del producto:</label>
-        <input type="text" id="product-name" required>
-        <label for="product-price">Precio del producto:</label>
-        <input type="number" id="product-price" step="0.01" required>
-        <label for="store-name">Nombre de la tienda:</label>
-        <input type="text" id="store-name" required>
-        <label for="product-photo">Foto del producto:</label>
-        <input type="file" id="product-photo" accept="image/*">
-        <button type="submit">Guardar Producto</button>
-    </form>
+    <!-- Formulario de entrada de productos -->
+    <div id="productForm">
+        <h2>Ingresa un producto</h2>
+        <form id="addProductForm">
+            <label for="productName">Nombre del producto:</label>
+            <input type="text" id="productName" required>
 
-    <div id="best-price-box" style="display:none;">
-        <h2>¡El mejor precio lo encontramos en!</h2>
-        <p><strong>Tienda:</strong> <span id="best-store"></span></p>
-        <p><strong>Precio:</strong> $<span id="best-price"></span></p>
+            <label for="productPrice">Precio:</label>
+            <input type="number" id="productPrice" required>
+
+            <label for="storeName">Nombre de la tienda:</label>
+            <input type="text" id="storeName" required>
+
+            <button type="submit">Guardar Producto</button>
+        </form>
     </div>
 
+    <!-- Sección de resultados -->
+    <div id="resultBox">
+        <h2>Mejor precio encontrado:</h2>
+        <div id="bestPriceDetails"></div>
+    </div>
+
+    <!-- Script de Firebase y lógica de la aplicación -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
