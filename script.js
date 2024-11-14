@@ -1,96 +1,102 @@
-// Configuración de Firebase
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, get, child, onValue } from "firebase/database";
-
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
-    authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
-    databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com",
-    projectId: "comparador-de-precios-ae4b4",
-    storageBucket: "comparador-de-precios-ae4b4.firebasestorage.app",
-    messagingSenderId: "764983752712",
-    appId: "1:764983752712:web:9ceed2bc4cf7f76adaf9bd",
-    measurementId: "G-WC3YSRPJ3P"
-};
-
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-let map;
-let products = [];
-let bestProduct = {};
-
-// Inicializar el mapa
-function initMap() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const userLocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-
-                map = new google.maps.Map(document.getElementById("map"), {
-                    center: userLocation,
-                    zoom: 14
-                });
-
-                new google.maps.Marker({
-                    position: userLocation,
-                    map: map,
-                    title: "Tu ubicación"
-                });
-            },
-            () => {
-                alert("No se pudo obtener la ubicación.");
-            }
-        );
-    } else {
-        alert("Geolocalización no es soportada por este navegador.");
-    }
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
-// Función para agregar un producto
-function addProduct() {
-    const productName = document.getElementById("productName").value;
-    const productPrice = parseFloat(document.getElementById("productPrice").value);
-    const storeLocation = document.getElementById("storeLocation").value;
-    const productImage = document.getElementById("productImage").files[0];
-
-    if (productName && !isNaN(productPrice) && storeLocation && productImage) {
-        const productData = {
-            name: productName,
-            price: productPrice,
-            store: storeLocation,
-            image: URL.createObjectURL(productImage),
-            location: map.getCenter() // Usa la ubicación del mapa
-        };
-
-        // Guardar en Firebase
-        const productRef = ref(db, 'products/' + Date.now());
-        set(productRef, productData);
-
-        // Agregar producto a la lista
-        products.push(productData);
-        displayProducts();
-        comparePrices();
-    } else {
-        alert("Por favor, completa todos los campos.");
-    }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
 }
 
-// Mostrar productos en la lista
-function displayProducts() {
-    const productsContainer = document.getElementById("productsContainer");
-    productsContainer.innerHTML = ""; // Limpiar la lista antes de agregar los nuevos productos
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-    products.forEach((product) => {
-        const productItem = document.createElement("div");
-        productItem.classList.add("product-item");
-        productItem.innerHTML = `
-            <div class="product-info">
-                <img src="${product.image}" alt="Imagen del producto">
-                <h4>${product.name}</h4>
-                <p>Precio:
+header h1 {
+    font-size: 36px;
+    color: #007BFF;
+}
+
+header p {
+    font-size: 18px;
+    color: #555;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 30px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+.product-form, .recommendation {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.product-form input, .product-form button {
+    padding: 12px;
+    width: 80%;
+    max-width: 400px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#productList {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.product-item {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.product-item img {
+    width: 100px;
+    height: auto;
+    margin-right: 10px;
+}
+
+#recommendationBox {
+    background-color: #e2f9e0;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+#buyButton {
+    padding: 12px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#buyButton:hover {
+    background-color: #218838;
+}
