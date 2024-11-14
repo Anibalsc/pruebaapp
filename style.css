@@ -1,87 +1,86 @@
-/* Reset básico de márgenes y paddings */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Estilos generales para el body */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f8ff;
-    color: #333;
-    padding: 20px;
+    background-color: #f0f8ff; /* Azul claro */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Título principal */
-h1 {
+header h1 {
+    color: #00bcd4; /* Aqua */
+    margin-top: 20px;
+}
+
+#adBanner {
+    width: 100%;
+    background-color: #ff9800; /* Naranja */
+    color: white;
     text-align: center;
-    color: #00bcd4;
-    font-size: 2rem;
-    margin-bottom: 20px;
+    font-weight: bold;
+    padding: 8px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    font-size: 14px;
 }
 
-/* Formulario de entrada */
-#productForm {
-    background-color: #ffffff;
+#map {
+    width: 100%;
+    height: 500px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+#formContainer {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#formSection {
+    background: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-/* Formulario de productos */
-label {
-    display: block;
-    margin: 8px 0 4px;
-}
-
-input[type="text"],
-input[type="number"] {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
+    max-width: 400px;
+}
+
+input, button {
+    margin-bottom: 10px;
     padding: 10px;
-    margin: 8px 0 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 100%;
 }
 
 button {
-    background-color: #00bcd4;
+    background-color: #00bcd4; /* Aqua */
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    border-radius: 4px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0097a7;
+    background-color: #0097a7; /* Aqua oscuro */
 }
 
-/* Resultados */
-#resultBox {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    display: none;
-}
-
-#bestPriceDetails {
+#bestPriceBox {
+    background-color: #e0ffe0;
     padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-top: 10px;
-}
-
-/* Mapa */
-#map {
+    font-size: 18px;
+    margin-top: 20px;
+    border-radius: 5px;
     width: 100%;
-    height: 400px;
-    margin-bottom: 20px;
-    border-radius: 8px;
+    max-width: 400px;
+    text-align: center;
 }
 
+footer {
+    margin-top: 20px;
+}
