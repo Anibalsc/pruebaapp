@@ -1,97 +1,111 @@
-// Configuración de Firebase
+// Firebase configuration
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, get } from "firebase/database";
+
 const firebaseConfig = {
-    apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
-    authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
-    databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com",
-    projectId: "comparador-de-precios-ae4b4",
-    storageBucket: "comparador-de-precios-ae4b4.firebasestorage.app",
-    messagingSenderId: "764983752712",
-    appId: "1:764983752712:web:9ceed2bc4cf7f76adaf9bd",
-    measurementId: "G-WC3YSRPJ3P"
+  apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
+  authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
+  databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com",
+  projectId: "comparador-de-precios-ae4b4",
+  storageBucket: "comparador-de-precios-ae4b4.firebasestorage.app",
+  messagingSenderId: "764983752712",
+  appId: "1:764983752712:web:9ceed2bc4cf7f76adaf9bd",
+  measurementId: "G-WC3YSRPJ3P"
 };
 
 // Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 // Variables globales
 let map;
-let userLocation;
+let currentPosition;
+let marker;
 
-// Inicializar y mostrar el mapa
+// Función para inicializar el mapa
 function initMap() {
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
-            map = new google.maps.Map(document.getElementById("map"), {
-                center: userLocation,
-                zoom: 13,
-            });
-            new google.maps.Marker({
-                position: userLocation,
-                map,
-                title: "Tu ubicación",
-            });
-        },
-        () => {
-            alert("No se pudo obtener la ubicación");
-        }
-    );
+  // Usamos la API de geolocalización para obtener la ubicación actual
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      currentPosition = position.coords;
+      const latLng = { lat: currentPosition.latitude, lng: currentPosition.longitude };
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: latLng,
+        zoom: 15,
+      });
+
+      marker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: "Tu ubicación",
+      });
+    });
+  } else {
+    alert("La geolocalización no está disponible en este navegador.");
+  }
 }
 
-// Guardar producto en Firebase
-document.getElementById("addProductForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const productName = document.getElementById("productName").value;
-    const productPrice = parseFloat(document.getElementById("productPrice").value);
-    const storeName = document.getElementById("storeName").value;
+// Función para guardar el producto en Firebase
+document.getElementById("addProductForm").addEventListener("submit", function(event) {
+  event.preventDefault();
 
-    const newProductRef = database.ref("products").push();
-    newProductRef.set({
-        productName,
-        productPrice,
-        storeName,
-        latitude: userLocation.lat,
-        longitude: userLocation.lng,
-        timestamp: Date.now()
-    });
+  const productName = document.getElementById("productName").value;
+  const productPrice = document.getElementById("productPrice").value;
+  const storeName = document.getElementById("storeName").value;
 
-    document.getElementById("addProductForm").reset();
-    displayBestPrice(productName);
+  if (currentPosition) {
+    const productData = {
+      name: productName,
+      price: productPrice,
+      store: storeName,
+      location: {
+        lat: currentPosition.latitude,
+        lng: currentPosition.longitude
+      },
+      timestamp: Date.now()
+    };
+
+    // Guardar en Firebase
+    const newProductRef = ref(db, 'products/' + Date.now());
+    set(newProductRef, productData);
+
+    alert("Producto guardado exitosamente.");
+  } else {
+    alert("No se pudo obtener tu ubicación.");
+  }
 });
 
-// Mostrar el mejor precio para el producto
-function displayBestPrice(productName) {
-    database.ref("products").orderByChild("productName").equalTo(productName).once("value", (snapshot) => {
-        let bestProduct = null;
+// Función para mostrar el mejor precio encontrado
+function displayBestPrice() {
+  const productsRef = ref(db, 'products/');
+  get(productsRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const products = snapshot.val();
+      let bestPrice = Infinity;
+      let bestProduct = null;
 
-        snapshot.forEach((childSnapshot) => {
-            const product = childSnapshot.val();
-            if (!bestProduct || product.productPrice < bestProduct.productPrice) {
-                bestProduct = product;
-            }
-        });
-
-        if (bestProduct) {
-            const bestPriceDetails = `
-                <p><strong>Producto:</strong> ${bestProduct.productName}</p>
-                <p><strong>Mejor precio:</strong> $${bestProduct.productPrice.toFixed(2)}</p>
-                <p><strong>Tienda:</strong> ${bestProduct.storeName}</p>
-            `;
-            document.getElementById("bestPriceDetails").innerHTML = bestPriceDetails;
-
-            const bestLocation = { lat: bestProduct.latitude, lng: bestProduct.longitude };
-            new google.maps.Marker({
-                position: bestLocation,
-                map,
-                title: `${bestProduct.productName} - ${bestProduct.storeName}`,
-            });
-            map.setCenter(bestLocation);
-        } else {
-            document.getElementById("bestPriceDetails").innerHTML = "<p>No se encontraron precios para este producto.</p>";
+      for (const key in products) {
+        if (products[key].price < bestPrice) {
+          bestPrice = products[key].price;
+          bestProduct = products[key];
         }
-    });
+      }
+
+      if (bestProduct) {
+        document.getElementById("bestPriceDetails").innerHTML = `
+          <p><strong>Producto:</strong> ${bestProduct.name}</p>
+          <p><strong>Precio:</strong> $${bestProduct.price}</p>
+          <p><strong>Tienda:</strong> ${bestProduct.store}</p>
+        `;
+        document.getElementById("resultBox").style.display = "block";
+      }
+    }
+  });
 }
 
-// Ejecutar la función initMap al cargar la página
-window.onload = initMap;
+// Llamar a la función para mostrar el mejor precio cada vez que se cargue el mapa
+window.onload = function() {
+  displayBestPrice();
+};
+
