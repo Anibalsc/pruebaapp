@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f8ff; /* Azul claro */
+    background-color: #f0f8ff;
     margin: 0;
     padding: 0;
     display: flex;
@@ -9,21 +9,8 @@ body {
 }
 
 header h1 {
-    color: #00bcd4; /* Aqua */
+    color: #00bcd4;
     margin-top: 20px;
-}
-
-#adBanner {
-    width: 100%;
-    background-color: #ff9800; /* Naranja */
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    padding: 8px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    font-size: 14px;
 }
 
 #map {
@@ -33,7 +20,7 @@ header h1 {
     margin-top: 20px;
 }
 
-#formContainer {
+.product-form {
     width: 100%;
     max-width: 900px;
     padding: 20px;
@@ -42,16 +29,7 @@ header h1 {
     margin-top: 20px;
 }
 
-#formSection {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-}
-
-input, button {
+.product-form input, .product-form button {
     margin-bottom: 10px;
     padding: 10px;
     font-size: 16px;
@@ -60,27 +38,25 @@ input, button {
 }
 
 button {
-    background-color: #00bcd4; /* Aqua */
+    background-color: #00bcd4;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0097a7; /* Aqua oscuro */
+    background-color: #0097a7;
 }
 
-#bestPriceBox {
-    background-color: #e0ffe0;
+.compare-container {
+    margin-top: 20px;
+}
+
+.price-recommendation {
+    background-color: #28a745;
+    color: white;
     padding: 10px;
-    font-size: 18px;
     margin-top: 20px;
     border-radius: 5px;
-    width: 100%;
-    max-width: 400px;
     text-align: center;
-}
-
-footer {
-    margin-top: 20px;
 }

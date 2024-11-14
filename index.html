@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparador de Precios de Productos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Comparador de Precios de Productos</h1>
+  <div id="map"></div>
+
+  <!-- Formulario para agregar productos -->
+  <div class="product-form">
+    <input type="text" id="productName" placeholder="Nombre del producto">
+    <input type="number" id="productPrice" placeholder="Precio del producto" step="0.01">
+    <input type="text" id="storeLocation" placeholder="Ubicación de la tienda">
+    <input type="file" id="productImage" accept="image/*">
+    <button onclick="addProduct()">Agregar Producto</button>
+  </div>
+
+  <!-- Botón para comparar precios -->
+  <div class="compare-container">
+    <button onclick="comparePrices()">Comparar Precios</button>
+  </div>
+
+  <!-- Cuadro de recomendación -->
+  <div class="price-recommendation" id="recommendationBox" style="display: none;">
+    <p><span id="bestStore"></span> tiene el mejor precio de <span id="bestPrice"></span> para el producto que buscas.</p>
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&callback=initMap" async defer></script>
+  <script src="cript.js"></script>
+</body>
+</html>
