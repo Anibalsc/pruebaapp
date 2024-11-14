@@ -1,65 +1,87 @@
+/* Reset básico de márgenes y paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos generales para el body */
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
     background-color: #f0f8ff;
     color: #333;
+    padding: 20px;
 }
 
+/* Título principal */
 h1 {
-    color: #ff7f50;
+    text-align: center;
+    color: #00bcd4;
+    font-size: 2rem;
+    margin-bottom: 20px;
 }
 
-#map {
-    width: 100%;
-    height: 400px;
-    margin: 20px 0;
-    border: 2px solid #ff7f50;
-}
-
-#productForm, #resultBox {
-    width: 80%;
-    max-width: 500px;
-    margin: 20px auto;
+/* Formulario de entrada */
+#productForm {
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    background-color: #e0f7fa;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
+/* Formulario de productos */
 label {
     display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
+    margin: 8px 0 4px;
 }
 
-input[type="text"], input[type="number"] {
-    width: calc(100% - 20px);
+input[type="text"],
+input[type="number"] {
+    width: 100%;
     padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
+    margin: 8px 0 12px;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 1rem;
 }
 
 button {
-    background-color: #ff7f50;
-    color: #fff;
+    background-color: #00bcd4;
+    color: white;
     border: none;
     padding: 10px 20px;
+    font-size: 1.2rem;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
 }
 
 button:hover {
-    background-color: #ff5722;
+    background-color: #0097a7;
 }
 
-#resultBox h2 {
-    color: #00796b;
+/* Resultados */
+#resultBox {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
 }
 
 #bestPriceDetails {
-    font-size: 18px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     margin-top: 10px;
-    color: #333;
 }
+
+/* Mapa */
+#map {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
