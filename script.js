@@ -1,7 +1,12 @@
-// Firebase configuration
+// Configuración de Firebase
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, get } from "firebase/database";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
   authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
@@ -13,99 +18,148 @@ const firebaseConfig = {
   measurementId: "G-WC3YSRPJ3P"
 };
 
-// Inicializar Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const analytics = getAnalytics(app);
+const firebaseConfig = {
+    apiKey: "AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8",
+    authDomain: "your-firebase-auth-domain",
+    databaseURL: "https://your-database-url.firebaseio.com",
+    projectId: "your-project-id",
+    storageBucket: "your-storage-bucket.appspot.com",
+    messagingSenderId: "your-sender-id",
+    appId: "your-app-id"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 // Variables globales
 let map;
-let currentPosition;
-let marker;
+let userLocation;
+const products = [];
 
-// Función para inicializar el mapa
+// Inicializar el mapa y obtener la ubicación del usuario
 function initMap() {
-  // Usamos la API de geolocalización para obtener la ubicación actual
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      currentPosition = position.coords;
-      const latLng = { lat: currentPosition.latitude, lng: currentPosition.longitude };
-
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: latLng,
-        zoom: 15,
-      });
-
-      marker = new google.maps.Marker({
-        position: latLng,
-        map: map,
-        title: "Tu ubicación",
-      });
+    map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        center: { lat: -34.397, lng: 150.644 },
     });
-  } else {
-    alert("La geolocalización no está disponible en este navegador.");
-  }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+
+                map.setCenter(userLocation);
+
+                new google.maps.Marker({
+                    position: userLocation,
+                    map: map,
+                    title: "Tu ubicación",
+                });
+            },
+            () => {
+                alert("No se pudo obtener la ubicación.");
+            }
+        );
+    } else {
+        alert("La geolocalización no está soportada.");
+    }
 }
 
-// Función para guardar el producto en Firebase
-document.getElementById("addProductForm").addEventListener("submit", function(event) {
-  event.preventDefault();
+// Manejo del formulario de producto
+document.getElementById("productForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-  const productName = document.getElementById("productName").value;
-  const productPrice = document.getElementById("productPrice").value;
-  const storeName = document.getElementById("storeName").value;
+    const productName = document.getElementById("productName").value;
+    const productPrice = parseFloat(document.getElementById("productPrice").value);
+    const storeName = document.getElementById("storeName").value;
+    const productImage = document.getElementById("productImage").files[0];
 
-  if (currentPosition) {
+    if (!productImage) {
+        alert("Por favor, selecciona una imagen.");
+        return;
+    }
+
+    const productLocation = userLocation;
+    const productRef = db.ref("products").push();
+
     const productData = {
-      name: productName,
-      price: productPrice,
-      store: storeName,
-      location: {
-        lat: currentPosition.latitude,
-        lng: currentPosition.longitude
-      },
-      timestamp: Date.now()
+        name: productName,
+        price: productPrice,
+        store: storeName,
+        image: URL.createObjectURL(productImage),
+        location: productLocation,
+        timestamp: Date.now(),
     };
 
     // Guardar en Firebase
-    const newProductRef = ref(db, 'products/' + Date.now());
-    set(newProductRef, productData);
+    productRef.set(productData);
 
-    alert("Producto guardado exitosamente.");
-  } else {
-    alert("No se pudo obtener tu ubicación.");
-  }
+    alert("Producto ingresado correctamente.");
+    displayBestPrice();
+    addProductMarker(productData);
 });
 
-// Función para mostrar el mejor precio encontrado
-function displayBestPrice() {
-  const productsRef = ref(db, 'products/');
-  get(productsRef).then((snapshot) => {
-    if (snapshot.exists()) {
-      const products = snapshot.val();
-      let bestPrice = Infinity;
-      let bestProduct = null;
+// Agregar un marcador en el mapa
+function addProductMarker(product) {
+    const marker = new google.maps.Marker({
+        position: product.location,
+        map: map,
+        title: `${product.name} - ${product.store}: $${product.price}`,
+    });
 
-      for (const key in products) {
-        if (products[key].price < bestPrice) {
-          bestPrice = products[key].price;
-          bestProduct = products[key];
-        }
-      }
+    const infowindow = new google.maps.InfoWindow({
+        content: `<strong>${product.name}</strong><br>${product.store}<br>$${product.price}`,
+    });
 
-      if (bestProduct) {
-        document.getElementById("bestPriceDetails").innerHTML = `
-          <p><strong>Producto:</strong> ${bestProduct.name}</p>
-          <p><strong>Precio:</strong> $${bestProduct.price}</p>
-          <p><strong>Tienda:</strong> ${bestProduct.store}</p>
-        `;
-        document.getElementById("resultBox").style.display = "block";
-      }
-    }
-  });
+    marker.addListener("click", () => {
+        infowindow.open(map, marker);
+    });
 }
 
-// Llamar a la función para mostrar el mejor precio cada vez que se cargue el mapa
-window.onload = function() {
-  displayBestPrice();
-};
+// Mostrar el precio más bajo
+function displayBestPrice() {
+    const bestPriceBox = document.getElementById("bestPriceBox");
 
+    db.ref("products").orderByChild("timestamp").on("value", snapshot => {
+        let bestPrice = null;
+
+        snapshot.forEach(productSnapshot => {
+            const product = productSnapshot.val();
+
+            // Filtrar productos dentro de los 20 km
+            const distance = calculateDistance(userLocation, product.location);
+
+            if (distance <= 20) {
+                if (!bestPrice || product.price < bestPrice.price) {
+                    bestPrice = product;
+                }
+            }
+        });
+
+        if (bestPrice) {
+            bestPriceBox.innerHTML = `Mejor precio: <strong>${bestPrice.name}</strong> en <strong>${bestPrice.store}</strong> por $${bestPrice.price}`;
+        } else {
+            bestPriceBox.innerHTML = "No hay productos disponibles en tu área.";
+        }
+    });
+}
+
+// Función para calcular la distancia entre dos ubicaciones (en km)
+function calculateDistance(loc1, loc2) {
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = (loc2.lat - loc1.lat) * Math.PI / 180;
+    const dLon = (loc2.lng - loc1.lng) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(loc1.lat * Math.PI / 180) * Math.cos(loc2.lat * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distancia en km
+}

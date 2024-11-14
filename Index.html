@@ -1,49 +1,219 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparador de Precios</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparador de Precios de Productos</title>
+  <style>
+    /* Estilos básicos para la app */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f4f4f9;
+    }
     
-    <!-- Cargar la API de Google Maps, asegurando que se inicie la función initMap -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&libraries=places&callback=initMap" async defer></script>
+    h1 {
+      margin: 20px 0;
+      color: #333;
+    }
+
+    #map {
+      height: 400px;
+      width: 90%;
+      margin-bottom: 20px;
+    }
+
+    .product-form {
+      width: 90%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .product-form input, .product-form button {
+      margin: 5px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .product-form button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .product-form button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Estilo del cuadro de recomendación de precios */
+    .price-recommendation {
+      background-color: #28a745;
+      color: white;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+      display: none; /* Inicialmente oculto */
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .price-recommendation span {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Comparador de Precios</h1>
-    </header>
+  <h1>Comparador de Precios de Productos</h1>
+  <div id="map"></div>
 
-    <!-- Mapa geolocalizado -->
-    <div id="map"></div>
+  <!-- Formulario para agregar productos -->
+  <div class="product-form">
+    <input type="text" id="productName" placeholder="Nombre del producto">
+    <input type="number" id="productPrice" placeholder="Precio del producto" step="0.01">
+    <input type="text" id="storeLocation" placeholder="Ubicación de la tienda">
+    <input type="file" id="productImage" accept="image/*">
+    <button onclick="addProduct()">Agregar Producto</button>
+  </div>
 
-    <!-- Formulario de entrada de productos -->
-    <div id="productForm">
-        <h2>Ingresa un producto</h2>
-        <form id="addProductForm">
-            <label for="productName">Nombre del producto:</label>
-            <input type="text" id="productName" required>
+  <!-- Cuadro de recomendación -->
+  <div class="price-recommendation" id="recommendationBox">
+    <p><span id="bestStore"></span> tiene el mejor precio de <span id="bestPrice"></span> para el producto que buscas.</p>
+  </div>
 
-            <label for="productPrice">Precio:</label>
-            <input type="number" id="productPrice" required>
+  <script>
+    let map;
+    let productos = [];
 
-            <label for="storeName">Nombre de la tienda:</label>
-            <input type="text" id="storeName" required>
+    // Función para inicializar el mapa y obtener la ubicación
+    function initMap() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const ubicacionUsuario = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
 
-            <button type="submit">Guardar Producto</button>
-        </form>
-    </div>
+            map = new google.maps.Map(document.getElementById("map"), {
+              center: ubicacionUsuario,
+              zoom: 14
+            });
 
-    <!-- Sección de resultados -->
-    <div id="resultBox">
-        <h2>Mejor precio encontrado:</h2>
-        <div id="bestPriceDetails"></div>
-    </div>
+            new google.maps.Marker({
+              position: ubicacionUsuario,
+              map: map,
+              title: "Tu ubicación"
+            });
 
-    <!-- Scripts de Firebase y lógica de la aplicación -->
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
-    <script src="script.js"></script>
+            obtenerProductos(); // Cargar productos
+          },
+          () => {
+            alert("No se pudo obtener la ubicación.");
+          }
+        );
+      } else {
+        alert("Geolocalización no es soportada por este navegador.");
+      }
+    }
+
+    // Función para agregar un producto
+    function addProduct() {
+      const productName = document.getElementById("productName").value;
+      const productPrice = parseFloat(document.getElementById("productPrice").value);
+      const storeLocation = document.getElementById("storeLocation").value;
+      const productImage = document.getElementById("productImage").files[0];
+
+      if (productName && !isNaN(productPrice) && storeLocation && productImage) {
+        const productData = {
+          nombre: productName,
+          precio: productPrice,
+          ubicacion: map.getCenter(), // Usa la ubicación del mapa
+          tienda: storeLocation,
+          imagen: URL.createObjectURL(productImage)
+        };
+
+        productos.push(productData);
+        mostrarProductosEnMapa();
+        alert("Producto agregado exitosamente");
+
+        // Comparar precios y mostrar la mejor oferta
+        compararPrecios(productoData);
+      } else {
+        alert("Por favor, completa todos los campos.");
+      }
+    }
+
+    // Función para cargar los productos (simulación de productos)
+    function obtenerProductos() {
+      const productoEjemplo = {
+        nombre: "Producto Ejemplo",
+        precio: 100,
+        ubicacion: { lat: -34.397, lng: 150.644 },
+        tienda: "Tienda A",
+        imagen: "https://via.placeholder.com/150"
+      };
+      productos.push(productoEjemplo);
+      mostrarProductosEnMapa();
+    }
+
+    // Mostrar los productos en el mapa
+    function mostrarProductosEnMapa() {
+      productos.forEach((producto) => {
+        const marcador = new google.maps.Marker({
+          position: producto.ubicacion,
+          map: map,
+          title: producto.nombre,
+        });
+
+        const contenidoInfo = `
+          <div>
+            <h3>${producto.nombre}</h3>
+            <img src="${producto.imagen}" alt="Imagen del producto" style="width: 100px;">
+            <p>Precio: $${producto.precio}</p>
+            <p>En ${producto.tienda}</p>
+          </div>
+        `;
+
+        const infoWindow = new google.maps.InfoWindow({
+          content: contenidoInfo,
+        });
+
+        marcador.addListener("click", () => {
+          infoWindow.open(map, marcador);
+        });
+      });
+    }
+
+    // Función para comparar precios y mostrar la mejor oferta
+    function compararPrecios(nuevoProducto) {
+      let mejorPrecio = Infinity;
+      let mejorTienda = "";
+
+      productos.forEach((producto) => {
+        if (producto.precio < mejorPrecio) {
+          mejorPrecio = producto.precio;
+          mejorTienda = producto.tienda;
+        }
+      });
+
+      // Mostrar el cuadro con la mejor oferta
+      const recommendationBox = document.getElementById("recommendationBox");
+      document.getElementById("bestStore").textContent = mejorTienda;
+      document.getElementById("bestPrice").textContent = mejorPrecio.toFixed(2);
+      recommendationBox.style.display = "block";
+    }
+  </script>
+
+  <!-- Cargar Google Maps con tu clave de API -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&callback=initMap">
+  </script>
 </body>
 </html>
-
