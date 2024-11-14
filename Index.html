@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparador de Precios</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Cargar la API de Google Maps -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&libraries=places"></script>
+    
+    <!-- Cargar la API de Google Maps, asegurando que se inicie la función initMap -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&libraries=places&callback=initMap" async defer></script>
 </head>
 <body>
     <h1>Comparador de Precios</h1>
+    
+    <!-- Mapa geolocalizado -->
     <div id="map"></div>
 
     <!-- Formulario de entrada de productos -->
@@ -35,7 +38,7 @@
         <div id="bestPriceDetails"></div>
     </div>
 
-    <!-- Script de Firebase y lógica de la aplicación -->
+    <!-- Scripts de Firebase y lógica de la aplicación -->
     <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js"></script>
     <script src="script.js"></script>
