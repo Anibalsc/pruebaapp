@@ -1,102 +1,121 @@
-/* General styles */
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+// Configuración de Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
+    authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
+    databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com",
+    projectId: "comparador-de-precios-ae4b4",
+    storageBucket: "comparador-de-precios-ae4b4.firebasestorage.app",
+    messagingSenderId: "764983752712",
+    appId: "1:764983752712:web:9ceed2bc4cf7f76adaf9bd",
+    measurementId: "G-WC3YSRPJ3P"
+};
+
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let map;
+let products = [];
+
+// Inicializar el mapa
+function initMap() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: userLocation,
+                    zoom: 14
+                });
+
+                new google.maps.Marker({
+                    position: userLocation,
+                    map: map,
+                    title: "Tu ubicación"
+                });
+            },
+            () => {
+                alert("No se pudo obtener la ubicación.");
+            }
+        );
+    } else {
+        alert("Geolocalización no es soportada por este navegador.");
+    }
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
+// Función para agregar un producto
+function addProduct() {
+    const productName = document.getElementById("productName").value;
+    const productPrice = parseFloat(document.getElementById("productPrice").value);
+    const storeLocation = document.getElementById("storeLocation").value;
+    const productImage = document.getElementById("productImage").files[0];
+
+    if (productName && !isNaN(productPrice) && storeLocation && productImage) {
+        const productData = {
+            name: productName,
+            price: productPrice,
+            store: storeLocation,
+            image: URL.createObjectURL(productImage),
+            location: map.getCenter() // Usa la ubicación del mapa
+        };
+
+        // Guardar en Firebase
+        const productRef = db.ref('products/' + Date.now());
+        productRef.set(productData);
+
+        // Agregar producto a la lista
+        products.push(productData);
+        displayProducts();
+        comparePrices();
+    } else {
+        alert("Por favor, completa todos los campos.");
+    }
 }
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
+// Mostrar productos en la lista
+function displayProducts() {
+    const productsContainer = document.getElementById("productsContainer");
+    productsContainer.innerHTML = ""; // Limpiar la lista antes de agregar los nuevos productos
+
+    products.forEach((product) => {
+        const productItem = document.createElement("div");
+        productItem.classList.add("product-item");
+        productItem.innerHTML = `
+            <div class="product-info">
+                <img src="${product.image}" alt="Imagen del producto" width="50" height="50">
+                <h4>${product.name}</h4>
+                <p>Precio: $${product.price}</p>
+                <p>Tienda: ${product.store}</p>
+            </div>
+        `;
+        productsContainer.appendChild(productItem);
+    });
 }
 
-header h1 {
-    font-size: 36px;
-    color: #007BFF;
+// Comparar precios y mostrar la mejor oferta
+function comparePrices() {
+    let bestPrice = Infinity;
+    let bestStore = "";
+
+    products.forEach((product) => {
+        if (product.price < bestPrice) {
+            bestPrice = product.price;
+            bestStore = product.store;
+        }
+    });
+
+    // Mostrar la mejor oferta
+    const recommendationBox = document.getElementById("recommendationBox");
+    document.getElementById("bestStore").textContent = bestStore;
+    document.getElementById("bestPrice").textContent = bestPrice.toFixed(2);
+    recommendationBox.style.display = "block";
 }
 
-header p {
-    font-size: 18px;
-    color: #555;
-}
-
-#map {
-    width: 100%;
-    height: 400px;
-    margin-bottom: 30px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-}
-
-.product-form, .recommendation {
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.product-form input, .product-form button {
-    padding: 12px;
-    width: 80%;
-    max-width: 400px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
-
-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-#productList {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.product-item {
-    background-color: #fff;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-.product-item img {
-    width: 100px;
-    height: auto;
-    margin-right: 10px;
-}
-
-#recommendationBox {
-    background-color: #e2f9e0;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-#buyButton {
-    padding: 12px 20px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-#buyButton:hover {
-    background-color: #218838;
+// Función de compra (por ahora solo un mensaje de confirmación)
+function buyProduct() {
+    alert("Producto comprado exitosamente.");
 }
