@@ -2,14 +2,13 @@
 const firebaseConfig = {
     apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
     authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
-    databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com",
+    databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com", // Verifica que esta URL esté correcta
     projectId: "comparador-de-precios-ae4b4",
     storageBucket: "comparador-de-precios-ae4b4.firebasestorage.app",
     messagingSenderId: "764983752712",
     appId: "1:764983752712:web:9ceed2bc4cf7f76adaf9bd",
     measurementId: "G-WC3YSRPJ3P"
 };
-
 // Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
