@@ -64,9 +64,14 @@ function addProduct() {
 
         // Guardar en Firebase
         const productRef = db.ref('products').push();
-        productRef.set(productData);
-
-        alert("Producto agregado exitosamente.");
+        productRef.set(productData)
+            .then(() => {
+                alert("Producto agregado exitosamente.");
+            })
+            .catch((error) => {
+                console.error("Error al guardar el producto en Firebase:", error);
+                alert("Hubo un problema al guardar el producto. Revisa la consola para más detalles.");
+            });
     } else {
         alert("Por favor, completa todos los campos.");
     }
