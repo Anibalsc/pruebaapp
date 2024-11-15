@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparador de Precios - Tienda</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Scripts de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&callback=initMap" async defer></script>
@@ -27,13 +28,6 @@
             <button onclick="addProduct()">Agregar Producto</button>
         </section>
 
-        <!-- Sección de productos más recientes -->
-        <section id="recentProductsSection">
-            <h2>Productos Más Recientes</h2>
-            <div id="recentProducts"></div>
-        </section>
-        <!-- Fin de sección de productos más recientes -->
-
         <section class="search-form">
             <h2>Buscar el Mejor Precio</h2>
             <input type="text" id="searchProductName" placeholder="Nombre del Producto" />
@@ -50,6 +44,6 @@
         <div id="productsContainer"></div>
     </div>
 
-    <script src="script.js"></script>
+   <script src="script.js"></script>
 </body>
 </html>
