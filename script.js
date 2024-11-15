@@ -15,6 +15,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let map;
+let products = [];
 
 // Inicializar el mapa
 function initMap() {
@@ -63,15 +64,11 @@ function addProduct() {
         };
 
         // Guardar en Firebase
-        const productRef = db.ref('products').push();
-        productRef.set(productData)
-            .then(() => {
-                alert("Producto agregado exitosamente.");
-            })
-            .catch((error) => {
-                console.error("Error al guardar el producto en Firebase:", error);
-                alert("Hubo un problema al guardar el producto. Revisa la consola para más detalles.");
-            });
+        const productRef = db.ref('products/' + Date.now());
+        productRef.set(productData);
+
+        products.push(productData);
+        alert("Producto agregado exitosamente.");
     } else {
         alert("Por favor, completa todos los campos.");
     }
@@ -81,26 +78,22 @@ function addProduct() {
 function searchBestPrice() {
     const searchProductName = document.getElementById("searchProductName").value.toLowerCase();
 
-    // Leer datos de Firebase y buscar el mejor precio
-    db.ref('products').once('value', (snapshot) => {
-        let bestPrice = Infinity;
-        let bestProduct = null;
+    let bestPrice = Infinity;
+    let bestProduct = null;
 
-        snapshot.forEach((childSnapshot) => {
-            const product = childSnapshot.val();
-            if (product.name.toLowerCase() === searchProductName && product.price < bestPrice) {
-                bestPrice = product.price;
-                bestProduct = product;
-            }
-        });
-
-        if (bestProduct) {
-            document.getElementById("bestStore").textContent = bestProduct.store;
-            document.getElementById("bestPrice").textContent = bestPrice.toFixed(2);
-            document.getElementById("bestLocation").textContent = `${bestProduct.location.lat}, ${bestProduct.location.lng}`;
-            document.getElementById("recommendationBox").style.display = "block";
-        } else {
-            alert("Producto no encontrado.");
+    products.forEach(product => {
+        if (product.name.toLowerCase() === searchProductName && product.price < bestPrice) {
+            bestPrice = product.price;
+            bestProduct = product;
         }
     });
+
+    if (bestProduct) {
+        document.getElementById("bestStore").textContent = bestProduct.store;
+        document.getElementById("bestPrice").textContent = bestPrice.toFixed(2);
+        document.getElementById("bestLocation").textContent = `${bestProduct.location.lat}, ${bestProduct.location.lng}`;
+        document.getElementById("recommendationBox").style.display = "block";
+    } else {
+        alert("Producto no encontrado.");
+    }
 }
