@@ -17,23 +17,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Probar guardado manual de datos
-function testFirebaseWrite() {
-    const testRef = db.ref('test');
-    testRef.set({
-        message: "Hola Firebase",
-        timestamp: Date.now()
-    })
-    .then(() => {
-        console.log("Datos guardados correctamente en Firebase.");
-        alert("Guardado exitoso: 'Hola Firebase'");
-    })
-    .catch((error) => {
-        console.error("Error al guardar datos en Firebase:", error);
-        alert("Error al guardar datos. Revisa la consola para más detalles.");
-    });
-}
-
 let map;
 let products = [];
 
