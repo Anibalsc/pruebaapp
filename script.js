@@ -1,18 +1,21 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 // Configuración de Firebase
+
 const firebaseConfig = {
-    apiKey: "AIzaSyDSPfuNhHxO3ILg_BO2uK6jmiTQvxxdrss",
-    authDomain: "comparador-de-precios-ae4b4.firebaseapp.com",
-    databaseURL: "https://comparador-de-precios-ae4b4-default-rtdb.firebaseio.com",
-    projectId: "comparador-de-precios-ae4b4",
-    storageBucket: "comparador-de-precios-ae4b4.firebasestorage.app",
-    messagingSenderId: "764983752712",
-    appId: "1:764983752712:web:9ceed2bc4cf7f76adaf9bd",
-    measurementId: "G-WC3YSRPJ3P"
+  apiKey: "AIzaSyBo1MItISgn_L-1Q9m7b4fht-vGLFyR-nw",
+  authDomain: "pricebook-v2-be817.firebaseapp.com",
+  databaseURL: "https://pricebook-v2-be817-default-rtdb.firebaseio.com",
+  projectId: "pricebook-v2-be817",
+  storageBucket: "pricebook-v2-be817.firebasestorage.app",
+  messagingSenderId: "1039852695586",
+  appId: "1:1039852695586:web:5362936365148dcddeda7b"
 };
 
 // Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const app = initializeApp(firebaseConfig);
 
 let map;
 
