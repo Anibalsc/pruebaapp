@@ -49,10 +49,21 @@ function initMap() {
 
 // Función para agregar un producto
 function addProduct() {
-    const productName = document.getElementById("productName").value;
-    const productPrice = parseFloat(document.getElementById("productPrice").value);
-    const storeLocation = document.getElementById("storeLocation").value;
-    const productImage = document.getElementById("productImage").files[0];
+  const productName = document.getElementById("productName").value;
+  // ... (resto de tu código)
+
+  // Guardar en Firebase
+  const productRef = db.ref('products').push();
+  productRef.set(productData)
+    .then(() => {
+      alert("Producto agregado exitosamente.");
+      // Aquí puedes agregar lógica adicional, como actualizar la lista de productos en la interfaz
+    })
+    .catch((error) => {
+      console.error('Error al guardar el producto:', error);
+      alert('Ocurrió un error al guardar el producto. Por favor, inténtalo de nuevo.');
+    });
+}
 
     if (productName && !isNaN(productPrice) && storeLocation && productImage) {
         const productData = {
