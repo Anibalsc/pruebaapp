@@ -52,7 +52,7 @@ async function addProduct() {
         // Subir imagen a Supabase
         const { data: uploadData, error: uploadError } = await supabase.storage
             .from('product-images')
-            .upload(`public/${productImage.name}`, productImage, {
+            .upload(`public/${Date.now()}-${productImage.name}`, productImage, {
                 contentType: productImage.type,
             });
 
@@ -101,7 +101,9 @@ async function showRecentProducts() {
 
     data.forEach((product) => {
         const productElement = document.createElement('div');
+        productElement.className = 'product-item';
         productElement.innerHTML = `
+            <img src="${product.image}" alt="${product.name}" class="product-image" />
             <p><strong>${product.name}</strong></p>
             <p>Precio: ${product.currency} ${product.price.toFixed(2)}</p>
             <p>Tienda: ${product.store}</p>
