@@ -1,12 +1,12 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabaseUrl = 'https://vgjfblpelkhhdnpcebjs.supabase.co';
-const supabaseKey = 'YOUR_SUPABASE_KEY';
+const supabaseKey = 'YOUR_SUPABASE_KEY'; // Reemplaza con tu clave de Supabase
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 let map, userLocation;
 
-// Inicializar el mapa
+// Inicializar el mapa con la API de Google Maps
 function initMap() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -16,11 +16,13 @@ function initMap() {
                     lng: position.coords.longitude,
                 };
 
+                // Configuración del mapa
                 map = new google.maps.Map(document.getElementById('map'), {
                     center: userLocation,
                     zoom: 14,
                 });
 
+                // Marcador en la ubicación del usuario
                 new google.maps.Marker({
                     position: userLocation,
                     map: map,
@@ -109,6 +111,15 @@ async function showRecentProducts() {
             <p>Tienda: ${product.store}</p>
         `;
         comparisonResults.appendChild(productElement);
+
+        // Agregar marcador en el mapa
+        if (product.location) {
+            new google.maps.Marker({
+                position: product.location,
+                map: map,
+                title: `${product.name} - ${product.store}: $${product.price}`,
+            });
+        }
     });
 }
 
