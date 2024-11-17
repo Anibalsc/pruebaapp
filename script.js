@@ -1,98 +1,117 @@
-// Configuración de Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyBo1MItISgn_L-1Q9m7b4fht-vGLFyR-nw",
-  authDomain: "pricebook-v2-be817.firebaseapp.com",
-  databaseURL: "https://pricebook-v2-be817-default-rtdb.firebaseio.com",
-  projectId: "pricebook-v2-be817",
-  storageBucket: "pricebook-v2-be817.firebasestorage.app",
-  messagingSenderId: "1039852695586",
-  appId: "1:1039852695586:web:5362936365148dcddeda7b"
-};
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const supabaseUrl = 'https://vgjfblpelkhhdnpcebjs.supabase.co';
+const supabaseKey = 'YOUR_SUPABASE_KEY';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-let map;
-let products = [];
+let map, userLocation;
 
 // Inicializar el mapa
 function initMap() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                const userLocation = {
+                userLocation = {
                     lat: position.coords.latitude,
-                    lng: position.coords.longitude
+                    lng: position.coords.longitude,
                 };
 
-                map = new google.maps.Map(document.getElementById("map"), {
+                map = new google.maps.Map(document.getElementById('map'), {
                     center: userLocation,
-                    zoom: 14
+                    zoom: 14,
                 });
 
                 new google.maps.Marker({
                     position: userLocation,
                     map: map,
-                    title: "Tu ubicación"
+                    title: 'Tu ubicación',
                 });
             },
             () => {
-                alert("No se pudo obtener la ubicación.");
+                alert('No se pudo obtener tu ubicación.');
             }
         );
     } else {
-        alert("Geolocalización no es soportada por este navegador.");
+        alert('La geolocalización no está soportada por este navegador.');
     }
 }
 
-// Función para agregar un producto
-function addProduct() {
-    const productName = document.getElementById("productName").value;
-    const productPrice = parseFloat(document.getElementById("productPrice").value);
-    const storeLocation = document.getElementById("storeLocation").value;
-    const productImage = document.getElementById("productImage").files[0];
+// Agregar producto
+async function addProduct() {
+    const productName = document.getElementById('productName').value;
+    const productPrice = parseFloat(document.getElementById('productPrice').value);
+    const storeName = document.getElementById('storeName').value;
+    const productImage = document.getElementById('productImage').files[0];
 
-    if (productName && !isNaN(productPrice) && storeLocation && productImage) {
+    if (!productName || isNaN(productPrice) || !storeName || !productImage) {
+        alert('Por favor, completa todos los campos.');
+        return;
+    }
+
+    try {
+        // Subir imagen a Supabase
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('product-images')
+            .upload(`public/${productImage.name}`, productImage, {
+                contentType: productImage.type,
+            });
+
+        if (uploadError) throw uploadError;
+
+        const imageUrl = `https://vgjfblpelkhhdnpcebjs.supabase.co/storage/v1/object/public/product-images/${uploadData.path}`;
+
+        // Crear objeto producto
         const productData = {
             name: productName,
             price: productPrice,
-            store: storeLocation,
-            image: URL.createObjectURL(productImage),
-            location: map.getCenter() 
+            store: storeName,
+            image: imageUrl,
+            location: userLocation,
+            currency: productPrice > 50 ? 'USD' : 'MXN',
+            created_at: new Date().toISOString(),
         };
 
-        // Guardar en Firebase
-        const productRef = db.ref('products/' + Date.now());
-        productRef.set(productData);
+        // Insertar producto en Supabase
+        const { error: insertError } = await supabase.from('products').insert([productData]);
 
-        products.push(productData);
-        alert("Producto agregado exitosamente.");
-    } else {
-        alert("Por favor, completa todos los campos.");
+        if (insertError) throw insertError;
+
+        alert('Producto agregado exitosamente.');
+        showRecentProducts();
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al agregar el producto.');
     }
 }
 
-// Función para buscar el mejor precio
-function searchBestPrice() {
-    const searchProductName = document.getElementById("searchProductName").value.toLowerCase();
+// Mostrar comparación de productos
+async function showRecentProducts() {
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    let bestPrice = Infinity;
-    let bestProduct = null;
+    if (error) {
+        console.error('Error al cargar productos:', error);
+        return;
+    }
 
-    products.forEach(product => {
-        if (product.name.toLowerCase() === searchProductName && product.price < bestPrice) {
-            bestPrice = product.price;
-            bestProduct = product;
-        }
+    const comparisonResults = document.getElementById('comparisonResults');
+    comparisonResults.innerHTML = '';
+
+    data.forEach((product) => {
+        const productElement = document.createElement('div');
+        productElement.innerHTML = `
+            <p><strong>${product.name}</strong></p>
+            <p>Precio: ${product.currency} ${product.price.toFixed(2)}</p>
+            <p>Tienda: ${product.store}</p>
+        `;
+        comparisonResults.appendChild(productElement);
     });
-
-    if (bestProduct) {
-        document.getElementById("bestStore").textContent = bestProduct.store;
-        document.getElementById("bestPrice").textContent = bestPrice.toFixed(2);
-        document.getElementById("bestLocation").textContent = `${bestProduct.location.lat}, ${bestProduct.location.lng}`;
-        document.getElementById("recommendationBox").style.display = "block";
-    } else {
-        alert("Producto no encontrado.");
-    }
 }
+
+// Ejecutar al cargar
+document.addEventListener('DOMContentLoaded', () => {
+    initMap();
+    showRecentProducts();
+});
