@@ -1,61 +1,68 @@
-/* General styles */
+/* General */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f8f9fa;
     color: #333;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
-    background-color: white;
 }
 
-header {
-    text-align: center;
-    margin-bottom: 30px;
+h1.app-title {
+    font-size: 3rem;
+    color: #007bff;
+    margin-bottom: 10px;
 }
 
-header h1 {
-    font-size: 2rem;
-    color: #007BFF;
-}
-
-header p {
-    font-size: 1rem;
+.subtitle {
+    font-size: 1.2rem;
     color: #555;
 }
 
+/* Mapa */
 .map {
     width: 100%;
-    height: 400px;
-    margin-bottom: 30px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
+    height: 300px;
+    margin: 20px 0;
+    border-radius: 10px;
+    border: 2px solid #007bff;
 }
 
-.product-form, .search-form, .recommendation {
-    margin-bottom: 40px;
-    text-align: center;
+/* Formulario */
+.form-section {
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 
-.product-form input, .search-form input, button {
-    padding: 12px;
-    width: 80%;
-    max-width: 400px;
+.form-section h2 {
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+input, button {
+    width: 100%;
     margin: 10px 0;
-    border-radius: 5px;
+    padding: 10px;
     border: 1px solid #ccc;
+    border-radius: 5px;
     font-size: 1rem;
 }
 
 button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
     cursor: pointer;
 }
 
@@ -63,18 +70,20 @@ button:hover {
     background-color: #0056b3;
 }
 
-#recommendationBox {
-    background-color: #e2f9e0;
+/* Comparación */
+.comparison-section {
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    border-radius: 10px;
     padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-@media screen and (max-width: 768px) {
-    header h1 {
-        font-size: 1.5rem;
-    }
-    .product-form, .search-form, .recommendation {
-        width: 100%;
-    }
+.comparison-section h2 {
+    color: #007bff;
+}
+
+#comparisonResults {
+    margin-top: 10px;
 }
