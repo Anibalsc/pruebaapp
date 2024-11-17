@@ -3,49 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparador de Precios - Tienda</title>
+    <title>Pricebook</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Scripts de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOy2gCytn6f13eTWAjPYQgqAw47UGqGu8&callback=initMap" async defer></script>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
 </head>
 <body>
     <div class="container">
+        <!-- Encabezado -->
         <header>
-            <h1>PRICEBOOK</h1>
-            <p>Encuentra el mejor precio cerca de ti y realiza tu compra fácilmente.</p>
+            <h1 class="app-title">Pricebook</h1>
+            <p class="subtitle">Tu comparador de precios inteligente</p>
         </header>
 
+        <!-- Mapa -->
         <div id="map" class="map"></div>
 
-        <section class="product-form">
-            <h2>Agregar un Nuevo Producto</h2>
-            <input type="text" id="productName" placeholder="Nombre del Producto" />
-            <input type="number" id="productPrice" placeholder="Precio del Producto" />
-            <input type="text" id="storeLocation" placeholder="Ubicación de la tienda" />
-            <input type="file" id="productImage" accept="image/*" />
+        <!-- Formulario para agregar productos -->
+        <section class="form-section">
+            <h2>Agregar Producto</h2>
+            <input type="text" id="productName" placeholder="Nombre del Producto">
+            <input type="number" id="productPrice" placeholder="Precio del Producto">
+            <input type="text" id="storeName" placeholder="Nombre del Comercio">
+            <input type="file" id="productImage" accept="image/*">
             <button onclick="addProduct()">Agregar Producto</button>
         </section>
 
-        <section class="search-form">
-            <h2>Buscar el Mejor Precio</h2>
-            <input type="text" id="searchProductName" placeholder="Nombre del Producto" />
-            <button onclick="searchBestPrice()">Buscar Mejor Precio</button>
+        <!-- Comparación de productos -->
+        <section class="comparison-section">
+            <h2>Comparación de Precios</h2>
+            <div id="comparisonResults"></div>
         </section>
-
-        <section id="recommendationBox" class="recommendation">
-            <h3>Mejor Oferta Encontrada</h3>
-            <p><strong>Tienda:</strong> <span id="bestStore">No disponible</span></p>
-            <p><strong>Precio:</strong> $<span id="bestPrice">0.00</span></p>
-            <p><strong>Ubicación:</strong> <span id="bestLocation">No disponible</span></p>
-        </section>
-
-        <div id="productsContainer"></div>
     </div>
 
-   <script src="script.js"></script>
-
-
+    <script type="module" src="script.js"></script>
 </body>
 </html>
