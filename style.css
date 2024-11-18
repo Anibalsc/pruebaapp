@@ -1,68 +1,61 @@
-/* General */
+/* General styles */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f9fa;
+    background-color: #f4f4f4;
     color: #333;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
+    background-color: white;
 }
 
-h1.app-title {
-    font-size: 3rem;
-    color: #007bff;
-    margin-bottom: 10px;
+header {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.subtitle {
-    font-size: 1.2rem;
+header h1 {
+    font-size: 2rem;
+    color: #007BFF;
+}
+
+header p {
+    font-size: 1rem;
     color: #555;
 }
 
-/* Mapa */
 .map {
     width: 100%;
-    height: 300px;
-    margin: 20px 0;
-    border-radius: 10px;
-    border: 2px solid #007bff;
+    height: 400px;
+    margin-bottom: 30px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
 }
 
-/* Formulario */
-.form-section {
-    width: 100%;
-    max-width: 600px;
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+.product-form, .search-form, .recommendation {
+    margin-bottom: 40px;
+    text-align: center;
 }
 
-.form-section h2 {
-    margin-bottom: 15px;
-    color: #007bff;
-}
-
-input, button {
-    width: 100%;
+.product-form input, .search-form input, button {
+    padding: 12px;
+    width: 80%;
+    max-width: 400px;
     margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
     border-radius: 5px;
+    border: 1px solid #ccc;
     font-size: 1rem;
 }
 
 button {
-    background-color: #007bff;
-    color: #fff;
-    font-weight: bold;
+    background-color: #007BFF;
+    color: white;
+    border: none;
     cursor: pointer;
 }
 
@@ -70,20 +63,18 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Comparación */
-.comparison-section {
-    width: 100%;
-    max-width: 600px;
-    background: #fff;
-    border-radius: 10px;
+#recommendationBox {
+    background-color: #e2f9e0;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
-.comparison-section h2 {
-    color: #007bff;
-}
-
-#comparisonResults {
-    margin-top: 10px;
+@media screen and (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    .product-form, .search-form, .recommendation {
+        width: 100%;
+    }
 }
