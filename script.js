@@ -35,6 +35,7 @@ function initMap() {
         alert("Geolocalización no es soportada por este navegador.");
     }
 }
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Función para agregar un producto
 async function addProduct() {
