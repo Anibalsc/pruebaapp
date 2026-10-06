@@ -1,0 +1,80 @@
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2rem;
+    color: #007BFF;
+}
+
+header p {
+    font-size: 1rem;
+    color: #555;
+}
+
+.map {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 30px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+.product-form, .search-form, .recommendation {
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.product-form input, .search-form input, button {
+    padding: 12px;
+    width: 80%;
+    max-width: 400px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#recommendationBox {
+    background-color: #e2f9e0;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+@media screen and (max-width: 768px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    .product-form, .search-form, .recommendation {
+        width: 100%;
+    }
+}
